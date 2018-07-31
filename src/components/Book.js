@@ -4,7 +4,9 @@ import PropTypes from 'prop-types'
 
 class Book extends Component {
   render () {
-    const { currentBook } = this.props
+
+    const { currentBook, books } = this.props
+
     return (
       <div className="book">
         <div className="book-top">
@@ -12,19 +14,19 @@ class Book extends Component {
             style={{
               width: 128,
               height: 193,
-              backgroundImage: `url("${currentBook.imageLinks.thumbnail}")` }}>
-
+              backgroundImage: `url('${currentBook.imageLinks && currentBook.imageLinks.thumbnail ? currentBook.imageLinks.thumbnail : null}')`
+            }}>
           </div>
-          <AddShelfButton />
+          <AddShelfButton
+            books={books}
+            currentBook = {currentBook}
+            handleChange={this.props.handleChange}
+           />
         </div>
-        <div className="book-title">{currentBook.title}</div>
+        <div className="book-title">{currentBook.title ? currentBook.title : null}</div>
         <div className="book-authors">{currentBook.authors}</div>
       </div>
     )
   }
-  static propTypes = {
-    currentBook: PropTypes.object.isRequired
-  }
 }
-
 export default Book
