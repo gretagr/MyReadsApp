@@ -1,50 +1,109 @@
 import React, { Component } from 'react';
-import Main from './components/Main'
-import Search from './components/Search'
-import './App.css'
+import { Link } from 'react-router-dom'
 import { Route } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
+import Search from './components/Search'
+import PageTitle from './components/PageTitle'
+import BookShelf from './components/BookShelf'
+import './App.css'
 
 
-class BooksApp extends Component {
+export default class BooksApp extends Component {
   state = {
-    books: []
+    books: [],
+    searchBooks: [],
+    query: ''
   }
   /* ================  Get All Books ==================*/
   componentDidMount = () => {
-    this.updateState(this.state.books)
-  }
-
-  updateState = (books) => {
     BooksAPI.getAll().then((books) => {
-      this.setState(prevState => ({ books: books }))
+      this.setState({ books })
     })
   }
 
-  updateShelf = (book, shelf, books) => {
+  updateShelf = (book, shelf) => {
     BooksAPI.update(book, shelf)
-    this.updateState(books)
+    BooksAPI.getAll().then((books) => {
+      this.setState({ books })
+    })
+  }
+
+  updateState = (query) => {
+    this.setState({ query })
+    this.onSearch(query)
+  }
+
+  onSearch = (query) => {
+    if (query.length > 0) {
+      BooksAPI.search(query).then( (searchBooks) => {
+        this.setState({ searchBooks })
+      })
+    }
+    else if (query.length === 0) {
+      this.setState({ searchBooks: [] })
+    }
   }
 
   render() {
+    const shelves = [
+      {name: 'currentlyReading', title: 'Currenty Reading'},
+      {name: 'wantToRead', title: 'Want To Read'},
+      {name: 'read', title: 'Read'}
+    ]
     return (
-      <div className="app">
-      <Route exact path='/' render={ () => (
-        <Main
-          title={'My Reads'}
-          books={this.state.books}
-          handleChange={this.updateShelf}
+      <React.Fragment>
+        {/* ================  Render Main Page ==================*/}
+        <Route exact path='/' render={ () => (
+
+          <React.Fragment>
+
+            {/* ================  page title component ==================*/}
+
+            <PageTitle
+              title={'My Reads'}
+            />
+
+            {/* ================  link to search page ==================*/}
+            <div className="open-search">
+              <Link to='/Search'>Add a book</Link>
+            </div>
+
+            {/* ================  Display Shelves:
+            /* for every object in shelves array, add BookShelf component
+            /* and send props to this component.
+            /* ==================*/}
+
+            <div className="list-books-content">
+
+              {shelves.map( shelve => (
+                <BookShelf
+                  key={shelve.title}
+                  shelfName={shelve.title}
+                  shelfKey={shelve.name}
+                  allBooks={this.state.books}
+                  handleChange={this.updateShelf}
+                />
+              ))}
+
+            </div>
+          </React.Fragment>
+
+        )}
+      />
+      {/* ================  Render Seatch Page ==================*/}
+        <Route path='/Search' render={ () => (
+
+            <Search
+              title={'Search Books'}
+              searchBooks={this.state.searchBooks}
+              query={this.state.query}
+              updateState={this.updateState}
+              allBooks={this.state.books}
+              handleChange={this.updateShelf}
+            />
+          )}
         />
-      )}/>
-      <Route path='/Search' render={ () => (
-        <Search
-          title={'Search Books'}
-          handleChange={this.updateShelf}
-        />
-      )}/>
-      </div>
+      </React.Fragment>
     )
   }
 }
-
-export default BooksApp

@@ -1,35 +1,14 @@
 import React, { Component } from 'react';
 import PageTitle from './PageTitle'
 import { Link } from 'react-router-dom'
-import escapeRegExp from 'escape-string-regexp'
-import * as BooksAPI from '../BooksAPI'
 import Book from './Book'
 
-class Search extends Component {
-
-  state = {
-    query: '',
-    books: []
-  }
-
-  updateState = (query) => {
-    this.setState({ query: query })
-    this.onSearch(query)
-  }
-
-  onSearch = (query) => {
-    if (query) {
-      const string =
-      BooksAPI.search(query).then( (searchedBooks) => {
-        this.setState({ books: searchedBooks })
-      })}
-    else {
-      this.setState({ books: [] })
-    }
-  }
+export default class Search extends Component {
 
   render () {
-    const { query, books } = this.state
+
+    const { query, updateState, searchBooks, allBooks } = this.props
+
     return (
       <React.Fragment>
         {/* ================  Page Title ==================*/}
@@ -39,37 +18,42 @@ class Search extends Component {
         {/* ================  Search Bar ==================*/}
 
         <div className="search-books-bar">
-          {/* ================  Link to Main Page  ==================*/}
           <Link className="close-search" to="/"></Link>
           <div className="search-books-input-wrapper">
-            {/* ================  Search Input ==================*/}
             <input
               type="text"
               placeholder="Search by title or author"
               value={query}
-              onChange={ (event) => this.updateState(event.target.value)}
+              onChange={ (event) => updateState(event.target.value)}
             />
           </div>
         </div>
-        {/* ================  Searched Books ==================*/}
+
         <div className="search-books-result">
-          {/* ================  Proceed Only If There Are Books in Books Array  ==================*/}
-          { books.length > 0 && (
           <ol className="books-grid">
-              {books.map(book => (
-                <li key={book.id}>
-                  <Book
-                    currentBook={book}
-                  />
-                </li>
-              ))
-            }
+            {/* ================  Proceed Only If There Are Books in Books Array  ==================*/}
+            { searchBooks.length > 0 && (
+              /* ================  Map all searched books and pass info to book component  ==================*/
+                searchBooks.map(searchedBook => {
+              /* ================  Check if book already in bookshelfs of main page, then set shelf name  ==================*/
+                allBooks.map(book => (
+                  searchedBook.id === book.id ? searchedBook.shelf = book.shelf : null
+                ))
+                return (
+                  <li key={searchedBook.id}>
+                    <Book
+                      currentBook={searchedBook}
+                      allBooks={allBooks}
+                      searchBooks={searchBooks}
+                      handleChange={this.props.handleChange}
+                    />
+                  </li>
+                )
+              })
+            )}
           </ol>
-        )}
         </div>
       </React.Fragment>
     )
   }
 }
-
-export default Search
