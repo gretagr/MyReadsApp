@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'
 
 export default class AddShelfButton extends Component {
 
   render () {
 
   const { currentBook, handleChange } = this.props
+
+  AddShelfButton.propTypes = {
+    currentBook: PropTypes.object.isRequired,
+    handleChange: PropTypes.func.isRequired
+  }
+
   /* ======== check if book already has some shelf, if so, store shelf name in name variable, else store none ======== */
   const name = currentBook.shelf ? currentBook.shelf : 'none'
 

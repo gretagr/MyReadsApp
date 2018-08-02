@@ -5,7 +5,12 @@ import PropTypes from 'prop-types'
 export default class Book extends Component {
   render () {
 
-  const { currentBook, allBooks, handleChange } = this.props
+  const { currentBook, handleChange } = this.props
+
+  Book.propTypes = {
+    currentBook: PropTypes.object.isRequired,
+    handleChange: PropTypes.func.isRequired
+  }
 
     return (
       <div className="book">
@@ -22,15 +27,13 @@ export default class Book extends Component {
             }}
           >
           </div>
-          {/* ======== add button to select shelf, pass this book and update handler ======== */}
+          {/* ======== create button element, pass current book and update handler ======== */}
           <AddShelfButton
             currentBook={currentBook}
             handleChange={handleChange}
-            allBooks={allBooks}
-            searchBooks={this.props.searchBooks}
           />
         </div>
-        {/* ======== check is title exists ======== */}
+        {/* ======== check if title & author exists ======== */}
         <div className="book-title">{currentBook.title ? currentBook.title : 'Unknown Title'}</div>
         <div className="book-authors">{currentBook.authors ? currentBook.authors : 'Unknown Author'}</div>
       </div>

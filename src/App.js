@@ -17,27 +17,32 @@ export default class BooksApp extends Component {
   /* ================  Get All Books ==================*/
 
   componentDidMount = () => {
-
+    // request to backEnd - get all books
     BooksAPI.getAll().then((books) => {
+      // update state: books & remove loading page
       this.setState({ books, loading: false })
     })
   }
 
   updateShelf = (book, shelf) => {
+    // request to backEnd - update books
     BooksAPI.update(book, shelf)
+    // request to backEnd - get all books
     BooksAPI.getAll().then((books) => {
+      // update state
       this.setState({ books })
     })
   }
 
-
-
   render() {
+
+    // shelves array of objects for shelf rendering
     const shelves = [
-      {name: 'currentlyReading', title: 'Currenty Reading'},
-      {name: 'wantToRead', title: 'Want To Read'},
-      {name: 'read', title: 'Read'}
+      {name: 'currentlyReading', title: 'Currenty Reading', shelfBooks: []},
+      {name: 'wantToRead', title: 'Want To Read', shelfBooks: []},
+      {name: 'read', title: 'Read', shelfBooks: []}
     ]
+
     return (
       <React.Fragment>
         {/* ================  Render Main Page ==================*/}
@@ -58,7 +63,8 @@ export default class BooksApp extends Component {
 
             {/* ================  Display Shelves:
             /* for every object in shelves array, add BookShelf component
-            /* and send props to this component.
+            /* and send props to BookShelf component. As This takes some time to rendering
+            /* this code wrapped in <Loading Screen> component to show loading while rendering
             /* ==================*/}
 
             <div className="list-books-content">
@@ -85,7 +91,7 @@ export default class BooksApp extends Component {
 
         )}
       />
-      {/* ================  Render Seatch Page ==================*/}
+      {/* ================  Render Search Page ==================*/}
         <Route path='/Search' render={ () => (
 
             <Search

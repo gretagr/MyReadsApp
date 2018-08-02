@@ -3,6 +3,7 @@ import PageTitle from './PageTitle'
 import { Link } from 'react-router-dom'
 import Book from './Book'
 import * as BooksAPI from '../BooksAPI'
+import PropTypes from 'prop-types'
 
 export default class Search extends Component {
   state = {
@@ -13,21 +14,20 @@ export default class Search extends Component {
 
   updateState = (query) => {
     this.setState({ query })
+    // call for onSearch func, which monitors query changes and updates search results
     this.onSearch(query)
   }
 
   onSearch = (query) => {
     if (query.length > 0) {
       BooksAPI.search(query).then( (searchBooks) => {
-        this.setState({ searchBooks })
-        /* this block of code handles what happens when input field
+        this.setState({ searchBooks, prevQuery: query })
+        /* next block of code handles what happens when input field
         /* is empty but query still has one letter left.
         /* (this happens when space after last word is made and then all text deleted)*/
-        this.setState({ prevQuery: query })
-        if (this.state.prevQuery.length - 2 === '') {
+        if (this.state.prevQuery.length - 2 === 0) {
           this.setState({ searchBooks: [] })
         }
-
       })
     }
     else if (query === '') {
@@ -38,8 +38,13 @@ export default class Search extends Component {
   render () {
 
     const { allBooks, title, handleChange } = this.props
-    const { query, searchBooks, prevQuery } = this.state
+    const { query, searchBooks } = this.state
 
+    Search.propTypes = {
+      title: PropTypes.string.isRequired,
+      allBooks: PropTypes.array.isRequired,
+      handleChange: PropTypes.func.isRequired
+    }
     return (
       <React.Fragment>
         {/* ================  Page Title ==================*/}
@@ -55,9 +60,7 @@ export default class Search extends Component {
               value={query}
               type="text"
               placeholder="Search by title or author"
-              onChange={ (event) => {
-                this.updateState(event.target.value)
-                 console.log('query:', query, 'prevQuery:', prevQuery)}}
+              onChange={ (event) => { this.updateState(event.target.value) } }
             />
           </div>
         </div>

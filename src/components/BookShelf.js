@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import Book from './Book'
+import PropTypes from 'prop-types'
 
 export default class BookShelf extends Component {
 
   render () {
 
     const { shelfName, shelfKey, handleChange, allBooks} = this.props;
+
+    BookShelf.propTypes = {
+      shelfName: PropTypes.string.isRequired,
+      shelfKey: PropTypes.string.isRequired,
+      allBooks: PropTypes.array.isRequired,
+      handleChange: PropTypes.func.isRequired
+    }
 
     return (
       <div>
