@@ -2,13 +2,34 @@ import React, { Component } from 'react';
 import PageTitle from './PageTitle'
 import { Link } from 'react-router-dom'
 import Book from './Book'
+import * as BooksAPI from '../BooksAPI'
 
 export default class Search extends Component {
+  state = {
+    searchBooks: [],
+    query: ''
+  }
+
+  updateState = (query) => {
+    this.setState({ query })
+    this.onSearch(query)
+  }
+
+  onSearch = (query) => {
+    if (query.length > 0) {
+      BooksAPI.search(query).then( (searchBooks) => {
+        this.setState({ searchBooks })
+      })
+    }
+    else if (query.length === 0) {
+      this.setState({ searchBooks: [] })
+    }
+  }
 
   render () {
 
-    const { query, updateState, searchBooks, allBooks } = this.props
-
+    const { allBooks } = this.props
+    const { query, searchBooks } = this.state
     return (
       <React.Fragment>
         {/* ================  Page Title ==================*/}
@@ -24,7 +45,7 @@ export default class Search extends Component {
               type="text"
               placeholder="Search by title or author"
               value={query}
-              onChange={ (event) => updateState(event.target.value)}
+              onChange={ (event) => this.updateState(event.target.value)}
             />
           </div>
         </div>

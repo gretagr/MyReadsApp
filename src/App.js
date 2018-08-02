@@ -11,8 +11,6 @@ import './App.css'
 export default class BooksApp extends Component {
   state = {
     books: [],
-    searchBooks: [],
-    query: ''
   }
   /* ================  Get All Books ==================*/
   componentDidMount = () => {
@@ -28,21 +26,7 @@ export default class BooksApp extends Component {
     })
   }
 
-  updateState = (query) => {
-    this.setState({ query })
-    this.onSearch(query)
-  }
 
-  onSearch = (query) => {
-    if (query.length > 0) {
-      BooksAPI.search(query).then( (searchBooks) => {
-        this.setState({ searchBooks })
-      })
-    }
-    else if (query.length === 0) {
-      this.setState({ searchBooks: [] })
-    }
-  }
 
   render() {
     const shelves = [
@@ -95,8 +79,6 @@ export default class BooksApp extends Component {
 
             <Search
               title={'Search Books'}
-              searchBooks={this.state.searchBooks}
-              query={this.state.query}
               updateState={this.updateState}
               allBooks={this.state.books}
               handleChange={this.updateShelf}
