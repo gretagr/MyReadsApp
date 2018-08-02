@@ -16,12 +16,11 @@ App also has a search page, which allows users to search and select books for hi
 ## Instructions
 
 * The application was created with create-react-app.
-* Application can be viewed online here: [MyReads App](https://gretagr.github.io/MyReadsApp/).
 
 ### Steps to run locally
 
 * Clone/Download repository to your computer.
-* in project directory run npm install and npm start to install and launch the application.
+* in project directory run `npm install` and `npm start` to install and launch the application.
 
 ## Dependencies
 
