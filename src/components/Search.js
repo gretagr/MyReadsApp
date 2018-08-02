@@ -7,7 +7,8 @@ import * as BooksAPI from '../BooksAPI'
 export default class Search extends Component {
   state = {
     searchBooks: [],
-    query: ''
+    query: '',
+    prevQuery: ''
   }
 
   updateState = (query) => {
@@ -19,22 +20,31 @@ export default class Search extends Component {
     if (query.length > 0) {
       BooksAPI.search(query).then( (searchBooks) => {
         this.setState({ searchBooks })
+        /* this block of code handles what happens when input field
+        /* is empty but query still has one letter left.
+        /* (this happens when space after last word is made and then all text deleted)*/
+        this.setState({ prevQuery: query })
+        if (this.state.prevQuery.length - 2 === '') {
+          this.setState({ searchBooks: [] })
+        }
+
       })
     }
-    else if (query.length === 0) {
+    else if (query === '') {
       this.setState({ searchBooks: [] })
     }
   }
 
   render () {
 
-    const { allBooks } = this.props
-    const { query, searchBooks } = this.state
+    const { allBooks, title, handleChange } = this.props
+    const { query, searchBooks, prevQuery } = this.state
+
     return (
       <React.Fragment>
         {/* ================  Page Title ==================*/}
         <PageTitle
-          title={this.props.title}
+          title={title}
         />
         {/* ================  Search Bar ==================*/}
 
@@ -42,10 +52,12 @@ export default class Search extends Component {
           <Link className="close-search" to="/"></Link>
           <div className="search-books-input-wrapper">
             <input
+              value={query}
               type="text"
               placeholder="Search by title or author"
-              value={query}
-              onChange={ (event) => this.updateState(event.target.value)}
+              onChange={ (event) => {
+                this.updateState(event.target.value)
+                 console.log('query:', query, 'prevQuery:', prevQuery)}}
             />
           </div>
         </div>
@@ -60,16 +72,18 @@ export default class Search extends Component {
                 allBooks.map(book => (
                   searchedBook.id === book.id ? searchedBook.shelf = book.shelf : null
                 ))
+
                 return (
                   <li key={searchedBook.id}>
                     <Book
                       currentBook={searchedBook}
                       allBooks={allBooks}
                       searchBooks={searchBooks}
-                      handleChange={this.props.handleChange}
+                      handleChange={handleChange}
                     />
                   </li>
                 )
+
               })
             )}
           </ol>

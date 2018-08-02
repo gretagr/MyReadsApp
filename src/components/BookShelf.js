@@ -11,9 +11,12 @@ export default class BookShelf extends Component {
       <div>
         <div className="bookshelf">
           <h2 className="bookshelf-title">{shelfName}</h2>
+          <div className="line"></div>
           <div className="bookshelf-books">
             <ol className="books-grid">
-            {/* ================= get all books and if they are assigned to a shelf, display books  ==================*/}
+            {/* get all books and if they are assigned
+            /* to a certain shelf (shelfKey),
+            /* display books in that shelf */}
             {allBooks.filter(book => book.shelf === shelfKey).map(
               book => (
                 <li key={book.id}>

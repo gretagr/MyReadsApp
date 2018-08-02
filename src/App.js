@@ -5,17 +5,21 @@ import * as BooksAPI from './BooksAPI'
 import Search from './components/Search'
 import PageTitle from './components/PageTitle'
 import BookShelf from './components/BookShelf'
+import LoadingScreen from 'react-loading-screen'
 import './App.css'
 
 
 export default class BooksApp extends Component {
   state = {
     books: [],
+    loading: true
   }
   /* ================  Get All Books ==================*/
+
   componentDidMount = () => {
+
     BooksAPI.getAll().then((books) => {
-      this.setState({ books })
+      this.setState({ books, loading: false })
     })
   }
 
@@ -37,12 +41,12 @@ export default class BooksApp extends Component {
     return (
       <React.Fragment>
         {/* ================  Render Main Page ==================*/}
+
         <Route exact path='/' render={ () => (
 
           <React.Fragment>
 
-            {/* ================  page title component ==================*/}
-
+            {/* ================  page title for main page ==================*/}
             <PageTitle
               title={'My Reads'}
             />
@@ -58,7 +62,14 @@ export default class BooksApp extends Component {
             /* ==================*/}
 
             <div className="list-books-content">
-
+              <LoadingScreen
+                loading={this.state.loading}
+                bgColor='linear-gradient(to bottom right, #53c1eb 0%, #6cd8ba 100%)'
+                spinnerColor='#ffffff'
+                textColor='#ffffff'
+                logoSrc='bookmark.png'
+                text='MY READS'
+              >
               {shelves.map( shelve => (
                 <BookShelf
                   key={shelve.title}
@@ -68,7 +79,7 @@ export default class BooksApp extends Component {
                   handleChange={this.updateShelf}
                 />
               ))}
-
+                </LoadingScreen>
             </div>
           </React.Fragment>
 

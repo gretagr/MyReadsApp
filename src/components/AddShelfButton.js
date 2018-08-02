@@ -5,7 +5,7 @@ export default class AddShelfButton extends Component {
   render () {
 
   const { currentBook, handleChange } = this.props
-  /* ======== check if book already in some shelf in the main page ======== */
+  /* ======== check if book already has some shelf, if so, store shelf name in name variable, else store none ======== */
   const name = currentBook.shelf ? currentBook.shelf : 'none'
 
     return (

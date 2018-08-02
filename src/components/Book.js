@@ -18,7 +18,7 @@ export default class Book extends Component {
               /* ======== check is image exists ======== */
               backgroundImage: `url('${
               currentBook.imageLinks && currentBook.imageLinks.thumbnail ?
-              currentBook.imageLinks.thumbnail : null}')`
+              currentBook.imageLinks.thumbnail : 'https://dummyimage.com/128x170/dfdcbb/ffffff&text=No+Image'}')`
             }}
           >
           </div>
@@ -31,8 +31,8 @@ export default class Book extends Component {
           />
         </div>
         {/* ======== check is title exists ======== */}
-        <div className="book-title">{currentBook.title ? currentBook.title : null}</div>
-        <div className="book-authors">{currentBook.authors}</div>
+        <div className="book-title">{currentBook.title ? currentBook.title : 'Unknown Title'}</div>
+        <div className="book-authors">{currentBook.authors ? currentBook.authors : 'Unknown Author'}</div>
       </div>
     )
   }
